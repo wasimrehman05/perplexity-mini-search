@@ -1,7 +1,7 @@
 import express from 'express';
-import { fetchSearchResults } from './search.js';
-import { generateAnswer } from './generateAnswer.js';
-import { config } from './config.js';
+import { fetchSearchResults } from '../src/search.js';
+import { generateAnswer } from '../src/generateAnswer.js';
+import { config } from '../src/config.js';
 
 const app = express();
 app.use(express.static('public'));

@@ -52,7 +52,7 @@ This project is a Perplexity-inspired mini search system designed to help users 
 
 4. **Run the Server**
    ```bash
-   node src/app.js
+   npm start
    ```
 
 5. **Access the Application**
