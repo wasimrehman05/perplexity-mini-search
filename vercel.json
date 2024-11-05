@@ -12,7 +12,10 @@
     ],
     "routes": [
         {
-            "src": "/api/(.*)",
+            "src": "/query",
+            "methods": [
+                "POST"
+            ],
             "dest": "/api/app.js"
         },
         {
