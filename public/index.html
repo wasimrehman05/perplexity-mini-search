@@ -5,7 +5,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini Perplexity</title>
-    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* Base Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .app-container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            background: #1c1c1e;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        /* Header */
+        .header h1 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 24px;
+        }
+
+        /* Query Section */
+        .query-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 20px;
+            position: relative;
+        }
+
+        #queryInput {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            background: #2c2c2e;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            text-align: left;
+            width: 100%;
+            resize: vertical;
+            border-bottom: 50px solid #2c2c2e;
+        }
+
+        .search-button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            padding: 5px 10px;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        /* Loader Styling */
+        .loader {
+            display: none;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #ffffff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-top: 10px;
+            position: absolute;
+            right: 15px;
+            bottom: 10px;
+        }
+
+        /* Response Styling */
+        .results-section {
+            text-align: left;
+            margin: 20px;
+        }
+
+        .result h3,
+        .result h4 {
+            color: #ffffff;
+        }
+
+        .result p {
+            color: #cccccc;
+        }
+
+        .result ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .result ul li a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .result ul li a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -24,7 +150,63 @@
         </div>
     </div>
 
-    <script src="/script.js"></script>
+    <script>
+        async function handleQuery() {
+            const queryInput = document.getElementById("queryInput");
+            const resultsSection = document.getElementById("resultsSection");
+            const loader = document.getElementById("loader");
+            const searchButton = document.getElementById("searchButton");
+
+            // Clear previous results and show loader
+            resultsSection.innerHTML = "";
+            searchButton.style.display = "none";
+            loader.style.display = "inline-block";
+
+            const query = queryInput.value;
+            if (!query) {
+                alert("Please enter a query.");
+                searchButton.style.display = "inline-block";
+                loader.style.display = "none";
+                return;
+            }
+
+            try {
+                // Make a POST request to the server with the user query
+                const response = await fetch("/query", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch results");
+
+                const data = await response.json();
+
+                // Display the answer and sources
+                resultsSection.innerHTML = `
+            <div class="result">
+                <h3 style="margin-bottom: 10px;">Answer</h3>
+                <p>${data.answer}</p>
+                <h4 style="margin-bottom: 10px; margin-top: 10px;">Sources</h4>
+                <ul>
+                    ${data.sources.map(source => `
+                        <li><a href="${source.link}" target="_blank">${source.title}</a></li>
+                    `).join('')}
+                </ul>
+            </div>
+        `;
+            } catch (error) {
+                console.error("Error:", error);
+                resultsSection.innerHTML = "<p>Error fetching results. Please try again.</p>";
+            } finally {
+                // Hide the loader
+                loader.style.display = "none";
+                searchButton.style.display = "inline-block";
+            }
+        }
+    </script>
 </body>
 
 </html>
