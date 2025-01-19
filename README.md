@@ -120,4 +120,4 @@ Follow the deployment guide for Vercel to set up the app:
 ### Challenges
 
 - **Balancing Speed and Accuracy**: Achieved fast responses without compromising answer quality by optimizing the search and answer-generation processes.
-- **Error Handling**: Built error handling to provide feedback even during failures, ensuring a smooth user experience.
+- **Error Handling**: Built error handling to provide feedback even during failures, ensuring a smooth user experience..
